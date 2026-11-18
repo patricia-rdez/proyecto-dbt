@@ -1,0 +1,46 @@
+sources:
+- name: kaggle
+  description: Dataset proveniente de la página web Kaggle con los datos de la web Fragrantica
+  database: "{{ env_var('DBT_BRONZE_DB') }}"
+  schema: kaggle
+
+  tables:
+  - name: perfumes
+    description: Lista de perfumes con sus características y métricas en un momento concreto
+    columns:
+      - name: id
+        description: ID del perfume
+        data_tests:
+          - unique # quitarlo si hago dos cargas, ya que la clave única sería id+scraped_at
+          - not_null
+      - name: slug
+        description: Slug de la URL del perfume
+      - name: name
+        description: Nombre del perfume
+        data_tests:
+          - not_null
+      - name: brand
+        description: Marca
+        data_tests:
+          - not_null
+      - name: year
+        description: Año de lanzamiento
+      - name: collection
+      - name: gender
+        description: Género etiquetado por Fragantica
+      - name: url
+        description: Link a la página del perfume en Fragrantica
+      - name: rating_avg
+        description: Valoración media del 0-5
+      - name: vote_count
+        description: Número de valoraciones
+      - name: rating_b1
+        description: Número de valoraciones de 1 estrella
+      - name: rating_b2
+        description: Número de valoraciones de 2 estrellas
+      - name: rating_b3
+        description: Número de valoraciones de 3 estrellas
+      - name: rating_b4
+        description: Número de valoraciones de 4 estrellas
+      - name: rating_b5
+        description: Número de valoraciones de 5 estrellas

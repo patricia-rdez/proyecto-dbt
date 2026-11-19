@@ -10,7 +10,7 @@ casted as(
         , trim(slug)                                            as slug
         , trim(name)                                            as name
         , trim(brand)                                           as brand
-        , try_to_number(year)::number(4,0)                      as year
+        , try_to_number(year,4,0)                               as year
         , nullif(trim(collection),'')                           as collection
         , trim(gender)                                          as gender
         , lower(trim(url))                                      as url
@@ -121,8 +121,8 @@ renamed as(
         , magnitude                 as popularity
         , compound_magnitude        as compound_popularity
         , recent_magnitude          as recent_popularity
-        , last_comment_at           
-        , scraped_at                as captured_at
+        , last_comment_at           as last_comment_at_utc
+        , scraped_at                as captured_at_utc
         , accords                   
         , notes_top                 
         , notes_middle              
@@ -130,7 +130,7 @@ renamed as(
         , notes_flat                
         , perfumers                 
         , description               
-        , _loaded_at
+        , _loaded_at                as date_load
     from casted              
 )
 

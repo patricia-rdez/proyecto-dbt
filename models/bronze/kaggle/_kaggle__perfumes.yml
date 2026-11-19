@@ -1,0 +1,139 @@
+sources:
+- name: kaggle
+  description: Dataset proveniente de la página web Kaggle con los datos de la web Fragrantica
+  database: "{{ env_var('DBT_BRONZE_DB') }}"
+  schema: kaggle
+
+  tables:
+  - name: perfumes
+    description: Lista de perfumes con sus características y métricas en un momento concreto.
+    columns:
+      - name: id
+        description: ID del perfume.
+        data_tests:
+          - unique # quitarlo si hago dos cargas, ya que la clave única sería id+scraped_at
+          - not_null
+      - name: slug
+        description: Slug de la URL del perfume.
+      - name: name
+        description: Nombre del perfume.
+        data_tests:
+          - not_null
+      - name: brand
+        description: Marca.
+        data_tests:
+          - not_null
+      - name: year
+        description: Año de lanzamiento.
+      - name: collection
+      - name: gender
+        description: Género etiquetado por Fragantica.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['female', 'male', 'unisex']
+      - name: url
+        description: Link a la página del perfume en Fragrantica.
+      - name: rating_avg
+        description: Valoración media del 0-5.
+      - name: vote_count
+        description: Número de valoraciones.
+      - name: rating_b1
+        description: Número de valoraciones de 1 estrella.
+      - name: rating_b2
+        description: Número de valoraciones de 2 estrellas.
+      - name: rating_b3
+        description: Número de valoraciones de 3 estrellas.
+      - name: rating_b4
+        description: Número de valoraciones de 4 estrellas.
+      - name: rating_b5
+        description: Número de valoraciones de 5 estrellas.
+      - name: longevity_avg
+        description: Media de las votaciones de longevidad del 0-5.
+      - name: longevity_b1
+        description: Número de valoraciones para longevidad escasa (1).
+      - name: longevity_b2
+        description: Número de valoraciones para longevidad débil (2).
+      - name: longevity_b3
+        description: Número de valoraciones para longevidad moderada (3).
+      - name: longevity_b4
+        description: Número de valoraciones para longevidad duradera (4).
+      - name: longevity_b5
+        description: Número de valoraciones para longevidad muy duradera (5).
+      - name: sillage_avg
+        description: Media de las votaciones de la estela de la fragancia del 0-4.
+      - name: sillage_b1
+        description: Número de valoraciones para estela suave (1).
+      - name: sillage_b2
+        description: Número de valoraciones para estela moderada (2).
+      - name: sillage_b3
+        description: Número de valoraciones para estela pesada (3).
+      - name: sillage_b4
+        description: Número de valoraciones para estela enorme (4).
+      - name: price_value_avg
+        description: Media de las votaciones sobre el precio del 0-5.
+      - name: price_value_b1
+        description: Número de valoraciones para precio extremadamente costoso (1).
+      - name: price_value_b2
+        description: Número de valoraciones para precio ligeramente costoso (2).
+      - name: price_value_b3
+        description: Número de valoraciones para precio moderado (3).
+      - name: price_value_b4
+        description: Número de valoraciones para buen precio (4).
+      - name: price_value_b5
+        description: Número de valoraciones para excelente precio (5).
+      - name: have
+        description: Número de usuarios que tienen el perfume.
+      - name: had
+        description: Número de usuarios que han tenido el perfume.
+      - name: want
+        description: Número de usuarios que quieren el perfume.
+      - name: perceived_female
+        description: Números de usuarios que perciben el perfume como femenino.
+      - name: perceived_female_leaning
+        description: Números de usuarios que perciben el perfume como ligeramente femenino.
+      - name: perceived_unisex
+        description: Números de usuarios que perciben el perfume como unisex.
+      - name: perceived_male_leaning
+        description: Números de usuarios que perciben el perfume como ligeramente masculino.
+      - name: perceived_male
+        description: Números de usuarios que perciben el perfume como masculino.
+      - name: winter
+        description: Número de personas que se pondrían el perfume en invierno.
+      - name: spring
+        description: Número de personas que se pondrían el perfume en primavera.
+      - name: summer
+        description: Número de personas que se pondrían el perfume en verano.
+      - name: autumn
+        description: Número de personas que se pondrían el perfume en otoño.
+      - name: day
+        description: Número de personas que se pondrían el perfume por el día.
+      - name: night
+        description: Número de personas que se pondrían el perfume por la noche.
+      - name: people
+        description: Columna duplicada, coincide con vote_count.
+      - name: magnitude
+        description: Índice de popularidad total de Fragrantica (ranking).
+      - name: compound_magnitude
+        description: Índice de popularidad ponderada de Fragrantica (ranking).
+      - name: recent_magnitude
+        description: Índice de popularidad reciente de Fragrantica (ranking).
+      - name: last_comment_at
+        description: Momento (unix timestamp) del último comentario (reseña) en el momento de captura del registro.
+      - name: scraped_at
+        description: Momento (unix timestamp) en el que fue capturado el registro.
+      - name: accords
+        description: Los principales acordes de la fragancia, con su respectiva fuerza, en un mismo string.
+      - name: notes_top
+        description: Notas de salida de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_middle
+        description: Notas de corazón de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_base
+        description: Notas de base de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_flat
+        description: Notas de una fragancia, en el caso de que no estén en forma de pirámide con su respectivo peso.
+      - name: perfumers
+        description: Los distintos perfumistas de la fragancia
+      - name: description
+        description: Descripción de la fragancia.

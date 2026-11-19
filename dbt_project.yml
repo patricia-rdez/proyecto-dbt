@@ -37,4 +37,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   proyecto_perfumes:
-    
+    staging:
+      +materialized: view
+      +database: "{{ env_var('DBT_SILVER_DB') }}"
+      +tags: ['staging']
+      kaggle:
+        +schema: kaggle

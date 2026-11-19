@@ -28,6 +28,11 @@ sources:
       - name: collection
       - name: gender
         description: Género etiquetado por Fragantica.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['female', 'male', 'unisex']
       - name: url
         description: Link a la página del perfume en Fragrantica.
       - name: rating_avg
@@ -108,3 +113,27 @@ sources:
         description: Número de personas que se pondrían el perfume por la noche.
       - name: people
         description: Columna duplicada, coincide con vote_count.
+      - name: magnitude
+        description: Índice de popularidad total de Fragrantica (ranking).
+      - name: compound_magnitude
+        description: Índice de popularidad ponderada de Fragrantica (ranking).
+      - name: recent_magnitude
+        description: Índice de popularidad reciente de Fragrantica (ranking).
+      - name: last_comment_at
+        description: Momento (unix timestamp) del último comentario (reseña) en el momento de captura del registro.
+      - name: scraped_at
+        description: Momento (unix timestamp) en el que fue capturado el registro.
+      - name: accords
+        description: Los principales acordes de la fragancia, con su respectiva fuerza, en un mismo string.
+      - name: notes_top
+        description: Notas de salida de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_middle
+        description: Notas de corazón de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_base
+        description: Notas de base de la fragancia con su respectivo peso (en función de las votaciones de usuarios).
+      - name: notes_flat
+        description: Notas de una fragancia, en el caso de que no estén en forma de pirámide con su respectivo peso.
+      - name: perfumers
+        description: Los distintos perfumistas de la fragancia
+      - name: description
+        description: Descripción de la fragancia.

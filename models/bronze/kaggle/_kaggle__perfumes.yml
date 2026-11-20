@@ -30,11 +30,6 @@ sources:
         description: Género etiquetado por Fragantica.
         data_tests:
           - not_null
-          - accepted_values:
-              arguments:
-                values: ['female', 'male', 'unisex']
-                config: 
-                  severity: warn
       - name: url
         description: Link a la página del perfume en Fragrantica.
       - name: rating_avg

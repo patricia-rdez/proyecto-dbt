@@ -1,0 +1,40 @@
+models:
+  - name: slv_kaggle__perfumes
+    description: Perfumes deduplicados con sus características básicas (marca, género, año de lanzamiento...)
+    columns:
+      - name: perfume_id
+        data_tests: [unique, not_null]
+      - name: slug
+      - name: perfume_name
+      - name: brand_id
+      - name: collection_id
+      - name: gender_id
+      - name: release_year
+      - name: url
+      - name: description
+
+  - name: slv_kaggle__genders
+    description: Géneros posibles asignados a un perfume con su id correspondiente.
+    columns:
+      - name: gender_id
+        data_tests: [unique, not_null]
+      - name: gender_name
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['female', 'male', 'unisex']
+
+  - name: slv_kaggle__brands
+    description: Marcas con su ID respectivo, manteniendo el formato de mayus/minus de fuente.
+    columns:
+      - name: brand_id
+        data_tests: [not_null] # No son únicos porque Zara y zara tienen el mismo id
+      - name: brand_name
+  
+  - name: slv_kaggle__collections
+    description: Colecciones deduplicadas
+    columns:
+      - name: collection_id
+        data_tests: [unique, not_null]
+      - name: brand_id
+      - name: collection_name

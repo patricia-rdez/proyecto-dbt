@@ -47,3 +47,21 @@ models:
         data_tests: [unique, not_null]
       - name: perfume_id
       - name: perfumer_id
+
+  - name: slv_kaggle__accords
+    description: Catálogo de todos los acordes posibles de un perfume.
+    columns:
+      - name: accord_id
+        data_tests: [unique, not_null]
+      - name: accord_name
+
+  - name: slv_kaggle__perfume_accord
+    description: Tabla puente identificando un perfume con sus acordes (8 como máximo).
+    columns:
+      - name: perfume_accord_id
+        description: Clave compuesta identificando cada fila.
+        data_tests: [unique, not_null]
+      - name: perfume_id
+      - name: accord_id
+      - name: strength
+      - name: position

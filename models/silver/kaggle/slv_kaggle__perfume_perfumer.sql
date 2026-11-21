@@ -14,7 +14,7 @@ extended as(
 ),
 
 joined as(
-    select
+    select distinct
           perfume_id
         , {{ dbt_utils.generate_surrogate_key(['perfumer_key']) }} as perfumer_id -- se evita hacer join
     from extended 

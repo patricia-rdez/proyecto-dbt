@@ -1,19 +1,18 @@
-with accords as(
+with source as(
     select
-        accords
+          perfume_id
+        , accords
     from {{ ref('stg_kaggle__perfumes') }}
     where accords is not null
 ),
 
 extended as(
-    select
-        split_part(a.value,':',1) as accord_name
-    from accords, lateral split_to_table(accords.accords,'|') as a
+    {{ list_to_name_and_weight('accords') }}
 ),
 
 cleaned as(
     select
-          lower(trim(accord_name)) as accord_name
+        lower(trim(item_name)) as accord_name
     from extended
 ),
 

@@ -1,4 +1,4 @@
-with accords as(
+with source as(
     select
           perfume_id
         , accords
@@ -7,19 +7,14 @@ with accords as(
 ),
 
 extended as(
-    select
-          perfume_id
-        , split_part(a.value,':',1) as accord_name
-        , split_part(a.value,':',2) as strength
-        , a.index as position
-    from accords, lateral split_to_table(accords.accords,'|') as a
+    {{ list_to_name_and_weight('accords') }}
 ),
 
 cleaned as(
     select
           perfume_id
-        , lower(trim(accord_name)) as accord_key
-        , try_to_number(strength) as strength
+        , lower(trim(item_name))        as accord_name
+        , try_to_number(item_value)     as strength
         , position
     from extended
 ),
@@ -27,11 +22,11 @@ cleaned as(
 joined as(
     select
           perfume_id
-        , {{ dbt_utils.generate_surrogate_key(['accord_key']) }} as accord_id
+        , {{ dbt_utils.generate_surrogate_key(['accord_name']) }} as accord_id
         , strength
         , position
     from cleaned
-    where accord_key != ''
+    where accord_name != ''
 ),
 
 id_generated as(

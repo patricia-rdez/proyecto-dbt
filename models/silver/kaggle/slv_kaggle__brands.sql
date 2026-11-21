@@ -14,6 +14,7 @@ with brands as(
         , brand_name
     from brands
     qualify row_number() over(partition by brand_key order by num_perfumes desc, brand_name) = 1
+    -- si hay dos marcas con el mismo key nos quedamos con la escritura que se repita más veces
  ),
 
 id_generated as(

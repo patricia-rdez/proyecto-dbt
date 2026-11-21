@@ -18,9 +18,9 @@ cleaned as(
           perfume_id
         , slug
         , perfume_name
-        , brand_name
+        , lower(brand_name) as brand_key
         , release_year
-        , collection_name
+        , lower(collection_name) as collection_key
         , lower(gender) as gender
         , url
         , description
@@ -30,20 +30,16 @@ cleaned as(
 
 joined as(
     select
-          p.perfume_id
-        , p.slug
-        , p.perfume_name
-        , b.brand_id
-        , p.release_year
-        , c.collection_id
-        , p.gender
-        , p.url
-        , p.description
-    from cleaned p
-    left join {{ ref('slv_kaggle__brands') }} b
-        on p.brand_name = b.brand_name
-    left join {{ ref('slv_kaggle__collections') }} c
-        on p.collection_name = c.collection_name
+          perfume_id
+        , slug
+        , perfume_name
+        , {{ dbt_utils.generate_surrogate_key(['brand_key']) }} as brand_id
+        , release_year
+        , {{ dbt_utils.generate_surrogate_key(['collection_key']) }} as collection_id
+        , gender
+        , url
+        , description
+    from cleaned
 )
 
 select * from joined

@@ -8,21 +8,14 @@ models:
       - name: perfume_name
       - name: brand_id
       - name: collection_id
-      - name: gender_id
-      - name: release_year
-      - name: url
-      - name: description
-
-  - name: slv_kaggle__genders
-    description: Géneros posibles asignados a un perfume con su id correspondiente.
-    columns:
-      - name: gender_id
-        data_tests: [unique, not_null]
-      - name: gender_name
+      - name: gender
         data_tests:
           - accepted_values:
               arguments:
                 values: ['female', 'male', 'unisex']
+      - name: release_year
+      - name: url
+      - name: description
 
   - name: slv_kaggle__brands
     description: Marcas con su ID respectivo, manteniendo el formato de mayus/minus de fuente.

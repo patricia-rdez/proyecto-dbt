@@ -6,10 +6,26 @@ with perfumes as(
         , brand_name
         , release_year
         , collection_name
-        , gender_name
+        , gender
         , url
         , description
+        , captured_at_utc
     from {{ ref('stg_kaggle__perfumes') }}
+),
+
+cleaned as(
+    select
+          perfume_id
+        , slug
+        , perfume_name
+        , brand_name
+        , release_year
+        , collection_name
+        , lower(gender) as gender
+        , url
+        , description
+    from perfumes
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc) = 1 -- si hago incrementalidad poner date_load
 ),
 
 joined as(
@@ -20,16 +36,14 @@ joined as(
         , b.brand_id
         , p.release_year
         , c.collection_id
-        , g.gender_id
+        , p.gender
         , p.url
         , p.description
-    from perfumes p
+    from cleaned p
     left join {{ ref('slv_kaggle__brands') }} b
         on p.brand_name = b.brand_name
     left join {{ ref('slv_kaggle__collections') }} c
         on p.collection_name = c.collection_name
-    left join {{ ref('slv_kaggle__genders') }} g
-        on p.gender_name = g.gender_name
 )
 
 select * from joined

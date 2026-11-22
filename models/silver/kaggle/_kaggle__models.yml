@@ -65,3 +65,9 @@ models:
       - name: accord_id
       - name: strength
       - name: position
+
+  - name: slv_kaggle__notes
+    description: Catálogo de todas las notas posibles de un perfume en sus diferentes niveles.
+    columns:
+      - name: note_id
+      - name: note_name

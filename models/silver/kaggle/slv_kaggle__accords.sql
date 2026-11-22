@@ -1,19 +1,7 @@
-with source as(
+with cleaned as(
     select
-          perfume_id
-        , accords
-    from {{ ref('stg_kaggle__perfumes') }}
-    where accords is not null
-),
-
-extended as(
-    {{ list_to_name_and_weight('accords') }}
-),
-
-cleaned as(
-    select
-        lower(trim(item_name)) as accord_name
-    from extended
+        lower(trim(accord_name)) as accord_name
+    from {{ ref('slv_int__accords_extended') }}
 ),
 
 id_generated as(

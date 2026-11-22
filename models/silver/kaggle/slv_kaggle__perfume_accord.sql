@@ -1,22 +1,10 @@
-with source as(
+with cleaned as(
     select
           perfume_id
-        , accords
-    from {{ ref('stg_kaggle__perfumes') }}
-    where accords is not null
-),
-
-extended as(
-    {{ list_to_name_and_weight('accords') }}
-),
-
-cleaned as(
-    select
-          perfume_id
-        , lower(trim(item_name))        as accord_name
-        , try_to_number(item_value)     as strength
+        , lower(trim(accord_name))  as accord_name
+        , try_to_number(strength)   as strength
         , position
-    from extended
+    from {{ ref('slv_int__accords_extended') }}
 ),
 
 joined as(

@@ -77,7 +77,7 @@ renamed as(
         , brand                     as brand_name
         , year                      as release_year
         , collection                as collection_name
-        , gender                    
+        , gender
         , url                       
         , rating_avg                
         , vote_count                as rating_vote_count

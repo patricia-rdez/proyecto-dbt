@@ -37,9 +37,20 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   proyecto_perfumes:
+    
+    +transient: false   # dbt no crea las tablas como transient (defecto) en Snowflake
+    
     staging:
       +materialized: view
       +database: "{{ env_var('DBT_SILVER_DB') }}"
       +tags: ['staging']
       kaggle:
         +schema: kaggle
+    
+    silver:
+      +materialized: table
+      +database: "{{ env_var('DBT_SILVER_DB') }}"
+      +tags: ['silver']
+      kaggle:
+        +schema: kaggle
+    

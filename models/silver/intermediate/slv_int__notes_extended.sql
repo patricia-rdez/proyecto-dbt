@@ -6,6 +6,8 @@ with source as(
         , notes_base
         , notes_flat
     from {{ ref('stg_kaggle__perfumes') }}
+    where notes_top is not null or notes_middle is not null 
+        or notes_base is not null or notes_flat is not null
 ),
 
 extended as(

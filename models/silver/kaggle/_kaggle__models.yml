@@ -70,4 +70,5 @@ models:
     description: Catálogo de todas las notas posibles de un perfume en sus diferentes niveles.
     columns:
       - name: note_id
+        data_tests: [unique, not_null]
       - name: note_name

@@ -72,3 +72,17 @@ models:
       - name: note_id
         data_tests: [unique, not_null]
       - name: note_name
+  
+  - name: slv_kaggle__perfume_note
+    description: Tabla puente identificando un perfume con sus distintas notas, el nivel correspondiente y su peso.
+    columns:
+      - name: perfume_note_id
+        data_tests: [unique, not_null]
+      - name: perfume_id
+      - name: note_id
+      - name: level
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['top', 'middle', 'base', 'flat']
+      - name: weight

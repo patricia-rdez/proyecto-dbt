@@ -14,25 +14,25 @@ casted as(
         , nullif(trim(collection),'')                           as collection
         , trim(gender)                                          as gender
         , lower(trim(url))                                      as url
-        , try_to_number(rating_avg)::number(5,4)                as rating_avg
+        , try_to_number(rating_avg,5,4)                         as rating_avg
         , try_to_number(vote_count)                             as vote_count
         , try_to_number(rating_b1)                              as rating_b1
         , try_to_number(rating_b2)                              as rating_b2
         , try_to_number(rating_b3)                              as rating_b3
         , try_to_number(rating_b4)                              as rating_b4
         , try_to_number(rating_b5)                              as rating_b5
-        , try_to_number(longevity_avg)::number(5,4)             as longevity_avg
+        , try_to_number(longevity_avg,5,4)                      as longevity_avg
         , try_to_number(longevity_b1)                           as longevity_b1
         , try_to_number(longevity_b2)                           as longevity_b2
         , try_to_number(longevity_b3)                           as longevity_b3
         , try_to_number(longevity_b4)                           as longevity_b4
         , try_to_number(longevity_b5)                           as longevity_b5
-        , try_to_number(sillage_avg)::number(5,4)               as sillage_avg
+        , try_to_number(sillage_avg,5,4)                        as sillage_avg
         , try_to_number(sillage_b1)                             as sillage_b1
         , try_to_number(sillage_b2)                             as sillage_b2
         , try_to_number(sillage_b3)                             as sillage_b3
         , try_to_number(sillage_b4)                             as sillage_b4
-        , try_to_number(price_value_avg)::number(5,4)           as price_value_avg
+        , try_to_number(price_value_avg,5,4)                    as price_value_avg
         , try_to_number(price_value_b1)                         as price_value_b1
         , try_to_number(price_value_b2)                         as price_value_b2
         , try_to_number(price_value_b3)                         as price_value_b3

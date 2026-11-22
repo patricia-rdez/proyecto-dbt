@@ -86,3 +86,32 @@ models:
               arguments:
                 values: ['top', 'middle', 'base', 'flat']
       - name: weight
+
+  - name: slv_kaggle__perfume_metrics
+    description: Distintias métricas capturadas en un instante temporal en la misma source cruda.
+      Algunas de las métricas_avg tienen valor 0, se corrigen a null, pero no se sustituyen por la avg calculada.
+    columns:
+      - name: rating_avg
+        data_tests:
+          - avg_matches_votes:
+              arguments:
+                metric: rating
+                values: 5
+      - name: longevity_avg
+        data_tests:
+          - avg_matches_votes:
+              arguments:
+                metric: longevity
+                values: 5
+      - name: sillage_avg
+        data_tests:
+          - avg_matches_votes:
+              arguments:
+                metric: sillage
+                values: 4
+      - name: price_value_avg
+        data_tests:
+          - avg_matches_votes:
+              arguments:
+                metric: price_value
+                values: 5

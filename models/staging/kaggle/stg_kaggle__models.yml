@@ -1,0 +1,6 @@
+models:
+  - name: stg_kaggle__perfumes
+    description: Casteado y renombrado de los datos crudos. Materializado como vista.
+    columns:
+      - name: people_count
+        description: Total de usuarios que votaron. Coincide siempre con rating_vote_count. No pasa a Silver por ser redundante.

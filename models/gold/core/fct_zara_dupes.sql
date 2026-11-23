@@ -180,8 +180,6 @@ id_generated as(
         , similarity
         , shared_accords
         , same_gender
-
-        -- medidas del dupe y del original
         , dupe_bayesian_rating
         , original_bayesian_rating
         , dupe_longevity_avg
@@ -196,8 +194,6 @@ id_generated as(
         , original_compound_popularity
         , dupe_recent_popularity
         , original_recent_popularity
-
-        -- diferencias (dupe - original): negativo = el dupe sale peor
         , bayesian_rating_diff
         , longevity_diff
         , sillage_diff

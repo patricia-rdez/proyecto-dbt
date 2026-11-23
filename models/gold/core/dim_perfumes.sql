@@ -27,6 +27,13 @@ collections as(
     from {{ ref('slv_kaggle__collections') }}
 ),
 
+brand_categories as (
+    select
+          brand_name
+        , brand_category
+    from {{ ref('brand_categories') }}
+),
+
 scores as(
     select *
     from {{ ref('int__perfume_scores') }}

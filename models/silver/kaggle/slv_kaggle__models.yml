@@ -179,30 +179,12 @@ models:
   - name: slv_kaggle__perfume_metrics
     description: Distintias métricas capturadas en un instante temporal en la misma source cruda.
       Algunas de las métricas_avg tienen valor 0, se corrigen a null, pero no se sustituyen por la avg calculada.
+      Los votos de la métrica con avg calculada se encuentran en slv_kaggle__perfume_metric_votes
     data_tests:
       - non_negative_values:
           arguments:
             column_name:
               - rating_vote_count
-              - rating_b1
-              - rating_b2
-              - rating_b3
-              - rating_b4
-              - rating_b5
-              - longevity_b1
-              - longevity_b2
-              - longevity_b3
-              - longevity_b4
-              - longevity_b5
-              - sillage_b1
-              - sillage_b2
-              - sillage_b3
-              - sillage_b4
-              - price_value_b1
-              - price_value_b2
-              - price_value_b3
-              - price_value_b4
-              - price_value_b5
               - have_count
               - had_count
               - want_count
@@ -232,10 +214,6 @@ models:
                 field: perfume_id
       - name: rating_avg
         data_tests:
-          - avg_matches_votes:
-              arguments:
-                metric: rating
-                values: 5
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 1
@@ -244,30 +222,18 @@ models:
         description: Número de votos de valoración. Sustituye a people, que coincide siempre con él.
       - name: longevity_avg
         data_tests:
-          - avg_matches_votes:
-              arguments:
-                metric: longevity
-                values: 5
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 1
                 max_value: 5
       - name: sillage_avg
         data_tests:
-          - avg_matches_votes:
-              arguments:
-                metric: sillage
-                values: 4
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 1
                 max_value: 4
       - name: price_value_avg
         data_tests:
-          - avg_matches_votes:
-              arguments:
-                metric: price_value
-                values: 5
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 1
@@ -275,3 +241,46 @@ models:
       - name: captured_at_utc
         description: Fecha de captura de la página (scraped_at), en UTC.
         data_tests: [not_null]
+    
+  - name: slv_kaggle__perfume_metric_votes
+    description: Votos por puntuación de cada métrica (histograma), en formato largo. 
+      Una fila por perfume, captura, métrica y puntuación. Se obtiene con UNPIVOT de las columnas
+      rating_b1..b5, longevity_b1..b5, sillage_b1..b4 y price_value_b1..b5.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "metric <> 'sillage' or score <= 4"
+    columns:
+      - name: perfume_votes_id
+        data_tests: [unique, not_null]
+      - name: perfume_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumes')
+                field: perfume_id
+      - name: captured_at_utc
+        description: Fecha de captura de la página, en UTC.
+        data_tests: [not_null]
+      - name: metric
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['rating', 'longevity', 'sillage', 'price_value']
+      - name: score
+        description: Puntuación del bucket, de 1 a 5 (de 1 a 4 en estela).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+      - name: vote_count
+        description: Número de votos que recibió esa puntuación.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0

@@ -35,7 +35,10 @@ joined as(
         , perfume_name
         , {{ dbt_utils.generate_surrogate_key(['brand_key']) }} as brand_id
         , release_year
-        , {{ dbt_utils.generate_surrogate_key(['collection_key']) }} as collection_id
+        , case
+              when collection_key is not null
+              then {{ dbt_utils.generate_surrogate_key(['brand_key', 'collection_key']) }}
+          end                                                  as collection_id
         , gender
         , url
         , description

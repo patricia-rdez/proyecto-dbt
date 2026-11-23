@@ -1,0 +1,6 @@
+seeds:
+  - name: brand_categories
+    description: Catálogo de marcas con el tipo (nicho, lujo, etc.).
+    columns:
+      - name: brand_name
+      - name: brand_categories

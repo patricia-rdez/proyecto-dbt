@@ -1,0 +1,88 @@
+models:
+  - name: dim_perfumes
+    description: Dimensión de perfumes desnormalizada.
+    columns:
+      - name: perfume_id
+        data_tests: [unique, not_null]
+      - name: brand_name
+        data_tests: [not_null]
+      - name: brand_category
+        description: Categoría del seed brand_categories; 'other' si la marca no está en el seed.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['designer', 'niche', 'low_cost', 'other']
+      - name: dominant_season
+        description: Estación con más votos; nulo si nadie ha votado estaciones.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['winter', 'spring', 'summer', 'autumn']
+      - name: dominant_daypart
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['day', 'night']
+
+  - name: fct_zara_dupes
+    description: Una fila por pareja de perfumes (zara y original).
+    columns:
+      - name: dupe_original_id
+        data_tests: [unique, not_null]
+      - name: dupe_perfume_id
+        description: Perfume de Zara.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_perfumes')
+                field: perfume_id
+      - name: original_perfume_id
+        description: Perfume de diseñador o de nicho con el que se compara.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_perfumes')
+                field: perfume_id
+      - name: similarity_rank
+        description: 1 = el original más parecido.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 3
+      - name: similarity
+        description: Similitud del coseno entre los acordes, de 0 a 1 (1 = mismo perfil).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: shared_accords
+        description: Número de acordes que comparten el dupe y el original (máx. 8).
+      - name: same_gender
+        description: TRUE si el dupe y el original tienen la misma etiqueta de género.
+      - name: dupe_popularity
+        description: Popularidad total del perfume de Zara (magnitude de Fragrantica).
+      - name: original_popularity
+        description: Popularidad total del original.
+      - name: dupe_compound_popularity
+        description: Popularidad compuesta del perfume de Zara (compound_magnitude; significado deducido, ponderada en el tiempo).
+      - name: original_compound_popularity
+        description: Popularidad compuesta del original (compound_magnitude; significado deducido).
+      - name: dupe_recent_popularity
+        description: Popularidad reciente del perfume de Zara (recent_magnitude; significado deducido).
+      - name: original_recent_popularity
+        description: Popularidad reciente del original (recent_magnitude; significado deducido).
+      - name: bayesian_rating_diff
+        description: Valoración bayesiana del dupe menos la del original. Negativo = el dupe gusta menos.
+      - name: longevity_diff
+        description: Longevidad del dupe menos la del original. Negativo = el dupe dura menos.
+      - name: sillage_diff
+        description: Estela del dupe menos la del original. Negativo = el dupe proyecta menos.
+      - name: price_value_diff
+        description: Calidad/precio del dupe menos la del original. Positivo = el dupe se percibe mejor pagado.

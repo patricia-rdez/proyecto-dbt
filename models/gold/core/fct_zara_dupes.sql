@@ -1,5 +1,16 @@
 with perfumes as (
-    select * 
+    select 
+          perfume_id
+        , perfume_name
+        , brand_name
+        , brand_category
+        , collection_name
+        , gender
+        , release_year
+        , release_decade
+        , dominant_season
+        , dominant_daypart
+        , has_enough_votes
     from {{ ref('dim_perfumes') }}
 ),
 
@@ -12,7 +23,27 @@ perfume_accords as (
 ),
 
 scores as (
-    select * 
+    select
+          perfume_id
+        , captured_at_utc
+        , rating_avg
+        , rating_vote_count
+        , bayesian_rating
+        , longevity_avg
+        , sillage_avg
+        , price_value_avg
+        , have_count
+        , had_count
+        , want_count
+        , popularity
+        , recent_popularity
+        , compound_popularity
+        , winter_share
+        , spring_share
+        , summer_share
+        , autumn_share
+        , dominant_season
+        , dominant_daypart
     from {{ ref('int__perfume_scores') }}
 ),
 
@@ -104,7 +135,7 @@ ranked as (
 
 joined as(
     select
-        r.dupe_perfume_id
+          r.dupe_perfume_id
         , r.original_perfume_id
         , r.similarity_rank
         , round(r.similarity, 4)                              as similarity
@@ -120,6 +151,12 @@ joined as(
         , so.sillage_avg                                      as original_sillage_avg
         , sd.price_value_avg                                  as dupe_price_value_avg
         , so.price_value_avg                                  as original_price_value_avg
+        , sd.popularity                                       as dupe_popularity
+        , so.popularity                                       as original_popularity
+        , sd.compound_popularity                              as dupe_compound_popularity
+        , so.compound_popularity                              as original_compound_popularity
+        , sd.recent_popularity                                as dupe_recent_popularity
+        , so.recent_popularity                                as original_recent_popularity
 
         -- diferencias (dupe - original): negativo = el dupe sale peor
         , sd.bayesian_rating - so.bayesian_rating             as bayesian_rating_diff
@@ -132,6 +169,41 @@ joined as(
     inner join perfumes po on po.perfume_id = r.original_perfume_id
     inner join scores sd on sd.perfume_id = r.dupe_perfume_id
     inner join scores so on so.perfume_id = r.original_perfume_id
+),
+
+id_generated as(
+    select
+          {{ dbt_utils.generate_surrogate_key(['dupe_perfume_id', 'original_perfume_id']) }} as dupe_original_id
+        , dupe_perfume_id
+        , original_perfume_id
+        , similarity_rank
+        , similarity
+        , shared_accords
+        , same_gender
+
+        -- medidas del dupe y del original
+        , dupe_bayesian_rating
+        , original_bayesian_rating
+        , dupe_longevity_avg
+        , original_longevity_avg
+        , dupe_sillage_avg
+        , original_sillage_avg
+        , dupe_price_value_avg
+        , original_price_value_avg
+        , dupe_popularity
+        , original_popularity
+        , dupe_compound_popularity
+        , original_compound_popularity
+        , dupe_recent_popularity
+        , original_recent_popularity
+
+        -- diferencias (dupe - original): negativo = el dupe sale peor
+        , bayesian_rating_diff
+        , longevity_diff
+        , sillage_diff
+        , price_value_diff
+
+    from joined
 )
 
-select * from joined
+select * from id_generated

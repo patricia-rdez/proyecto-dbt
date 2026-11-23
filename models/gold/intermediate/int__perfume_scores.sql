@@ -49,7 +49,7 @@ scored as (
 
 dominant as(
     select
-        perfume_id
+          perfume_id
         , captured_at_utc
         , rating_avg
         , rating_vote_count

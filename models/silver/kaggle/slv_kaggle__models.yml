@@ -90,6 +90,47 @@ models:
   - name: slv_kaggle__perfume_metrics
     description: Distintias métricas capturadas en un instante temporal en la misma source cruda.
       Algunas de las métricas_avg tienen valor 0, se corrigen a null, pero no se sustituyen por la avg calculada.
+    data_tests:
+      - non_negative_values:
+          arguments:
+            column_name:
+              - rating_vote_count
+              - rating_b1
+              - rating_b2
+              - rating_b3
+              - rating_b4
+              - rating_b5
+              - longevity_b1
+              - longevity_b2
+              - longevity_b3
+              - longevity_b4
+              - longevity_b5
+              - sillage_b1
+              - sillage_b2
+              - sillage_b3
+              - sillage_b4
+              - price_value_b1
+              - price_value_b2
+              - price_value_b3
+              - price_value_b4
+              - price_value_b5
+              - have_count
+              - had_count
+              - want_count
+              - perceived_female_votes
+              - perceived_female_leaning_votes
+              - perceived_unisex_votes
+              - perceived_male_leaning_votes
+              - perceived_male_votes
+              - winter_votes
+              - spring_votes
+              - summer_votes
+              - autumn_votes
+              - day_votes
+              - night_votes
+              - popularity
+              - compound_popularity
+              - recent_popularity
     columns:
       - name: rating_avg
         data_tests:

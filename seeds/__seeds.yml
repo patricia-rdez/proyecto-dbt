@@ -1,0 +1,12 @@
+seeds:
+  - name: brand_categories
+    description: Catálogo de marcas con el tipo (nicho, lujo, etc.).
+    columns:
+      - name: brand_name
+        data_tests: [unique, not_null]
+      - name: brand_category
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['designer', 'niche', 'low_cost']

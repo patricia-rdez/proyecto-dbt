@@ -53,4 +53,16 @@ models:
       +tags: ['silver']
       kaggle:
         +schema: kaggle
+
+    gold:
+      +materialized: table
+      +database: "{{ env_var('DBT_GOLD_DB') }}"
+      +tags: ['gold']
+      core:
+        +schema: core
     
+vars:
+  min_votes: 50            # mínimo de votos de los perfumes de Zara
+  min_votes_original: 100  # mínimo de votos de los originales con los que se compara Zara
+  bayesian_min_votes: 50   # m de la valoración bayesiana
+  dupe_candidates: 3       # originales más parecidos que se guardan por cada Zara

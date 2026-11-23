@@ -1,0 +1,45 @@
+with votes as (
+    select
+          perfume_id
+        , captured_at_utc
+        , rating_b1, rating_b2, rating_b3, rating_b4, rating_b5
+        , longevity_b1, longevity_b2, longevity_b3, longevity_b4, longevity_b5
+        , sillage_b1, sillage_b2, sillage_b3, sillage_b4
+        , price_value_b1, price_value_b2, price_value_b3, price_value_b4, price_value_b5
+    from {{ ref('stg_kaggle__perfumes') }}
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc) = 1
+),
+
+unpivoted as (
+    select 
+          perfume_id
+        , captured_at_utc
+        , bucket_column
+        , vote_count
+    from votes
+    unpivot (vote_count for bucket_column in (
+          rating_b1, rating_b2, rating_b3, rating_b4, rating_b5
+        , longevity_b1, longevity_b2, longevity_b3, longevity_b4, longevity_b5
+        , sillage_b1, sillage_b2, sillage_b3, sillage_b4
+        , price_value_b1, price_value_b2, price_value_b3, price_value_b4, price_value_b5
+    ))
+),
+
+renamed as(
+    select
+          perfume_id
+        , captured_at_utc
+        , lower(regexp_replace(bucket_column, '_B[0-9]$', ''))        as metric
+        , try_to_number(right(bucket_column, 1))::number(1,0)         as score
+        , vote_count
+    from unpivoted
+)
+
+select
+      {{ dbt_utils.generate_surrogate_key(['perfume_id', 'captured_at_utc', 'metric', 'score']) }} as perfume_votes_id
+    , perfume_id
+    , captured_at_utc
+    , metric
+    , score
+    , vote_count
+from renamed

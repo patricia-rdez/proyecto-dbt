@@ -1,19 +1,41 @@
 models:
   - name: slv_kaggle__perfumes
-    description: Perfumes deduplicados con sus características básicas (marca, género, año de lanzamiento...)
+    description: Perfumes deduplicados con sus características básicas (marca, género, año de lanzamiento...).
     columns:
       - name: perfume_id
         data_tests: [unique, not_null]
       - name: slug
       - name: perfume_name
+        data_tests: [not_null]
       - name: brand_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__brands')
+                field: brand_id
       - name: collection_id
+        description: Nulo cuando el perfume no pertenece a ninguna colección.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__collections')
+                field: collection_id
       - name: gender
         data_tests:
+          - not_null
           - accepted_values:
               arguments:
                 values: ['female', 'male', 'unisex']
       - name: release_year
+        description: Año de lanzamiento. Nulo en algunos perfumes, hay valores anómalos en origen.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1900
+                max_value: 2027
+              config:
+                severity: warn
       - name: url
       - name: description
 
@@ -23,6 +45,7 @@ models:
       - name: brand_id
         data_tests: [unique, not_null]
       - name: brand_name
+        data_tests: [unique, not_null]
   
   - name: slv_kaggle__collections
     description: Colecciones deduplicadas.
@@ -30,7 +53,14 @@ models:
       - name: collection_id
         data_tests: [unique, not_null]
       - name: brand_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__brands')
+                field: brand_id
       - name: collection_name
+        data_tests: [not_null]
   
   - name: slv_kaggle__perfumers
     description: Catálogo de perfumistas sin duplicados.
@@ -38,6 +68,7 @@ models:
       - name: perfumer_id
         data_tests: [unique, not_null]
       - name: perfumer_name
+        data_tests: [unique, not_null]
   
   - name: slv_kaggle__perfume_perfumer
     description: Tabla puente identificando un perfume con su(s) perfumista(s).
@@ -46,7 +77,19 @@ models:
         description: Clave compuesta identificando cada fila.
         data_tests: [unique, not_null]
       - name: perfume_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumes')
+                field: perfume_id
       - name: perfumer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumers')
+                field: perfumer_id
 
   - name: slv_kaggle__accords
     description: Catálogo de todos los acordes posibles de un perfume.
@@ -54,6 +97,7 @@ models:
       - name: accord_id
         data_tests: [unique, not_null]
       - name: accord_name
+        data_tests: [unique, not_null]
 
   - name: slv_kaggle__perfume_accord
     description: Tabla puente identificando un perfume con sus acordes (8 como máximo).
@@ -62,9 +106,34 @@ models:
         description: Clave compuesta identificando cada fila.
         data_tests: [unique, not_null]
       - name: perfume_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumes')
+                field: perfume_id
       - name: accord_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__accords')
+                field: accord_id
       - name: strength
+        description: Intensidad del acorde, del 1 al 100.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 100
       - name: position
+        description: Posición del acorde del 1 al 8, de mayor a menor intensidad.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 8
 
   - name: slv_kaggle__notes
     description: Catálogo de todas las notas posibles de un perfume en sus diferentes niveles.
@@ -72,6 +141,7 @@ models:
       - name: note_id
         data_tests: [unique, not_null]
       - name: note_name
+        data_tests: [unique, not_null]
   
   - name: slv_kaggle__perfume_note
     description: Tabla puente identificando un perfume con sus distintas notas, el nivel correspondiente y su peso.
@@ -79,13 +149,32 @@ models:
       - name: perfume_note_id
         data_tests: [unique, not_null]
       - name: perfume_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumes')
+                field: perfume_id
       - name: note_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__notes')
+                field: note_id
       - name: level
         data_tests:
           - accepted_values:
               arguments:
                 values: ['top', 'middle', 'base', 'flat']
       - name: weight
+        description: Peso votado de la nota, del 0 al 100.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
 
   - name: slv_kaggle__perfume_metrics
     description: Distintias métricas capturadas en un instante temporal en la misma source cruda.
@@ -132,27 +221,57 @@ models:
               - compound_popularity
               - recent_popularity
     columns:
+      - name: perfume_metrics_id
+        data_tests: [unique, not_null]
+      - name: perfume_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_kaggle__perfumes')
+                field: perfume_id
       - name: rating_avg
         data_tests:
           - avg_matches_votes:
               arguments:
                 metric: rating
                 values: 5
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+      - name: rating_vote_count
+        description: Número de votos de valoración. Sustituye a people, que coincide siempre con él.
       - name: longevity_avg
         data_tests:
           - avg_matches_votes:
               arguments:
                 metric: longevity
                 values: 5
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
       - name: sillage_avg
         data_tests:
           - avg_matches_votes:
               arguments:
                 metric: sillage
                 values: 4
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 4
       - name: price_value_avg
         data_tests:
           - avg_matches_votes:
               arguments:
                 metric: price_value
                 values: 5
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+      - name: captured_at_utc
+        description: Fecha de captura de la página (scraped_at), en UTC.
+        data_tests: [not_null]

@@ -1,6 +1,6 @@
 models:
   - name: dim_perfumes
-    description: Dimensión de perfumes desnormalizada.
+    description: Dimensión de perfumes desnormalizada. Una fila por perfume.
     columns:
       - name: perfume_id
         data_tests: [unique, not_null]
@@ -57,7 +57,7 @@ models:
                 to: ref('dim_perfumes')
                 field: perfume_id
       - name: similarity_rank
-        description: 1 = el original más parecido.
+        description: Rango de similaridad. 1 = el original más parecido.
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
@@ -89,18 +89,6 @@ models:
                 max_value: 8
       - name: same_gender
         description: TRUE si el dupe y el original tienen la misma etiqueta de género.
-      - name: dupe_popularity
-        description: Popularidad total del perfume de Zara (magnitude de Fragrantica).
-      - name: original_popularity
-        description: Popularidad total del original.
-      - name: dupe_compound_popularity
-        description: Popularidad compuesta del perfume de Zara (compound_magnitude; significado deducido, ponderada en el tiempo).
-      - name: original_compound_popularity
-        description: Popularidad compuesta del original (compound_magnitude; significado deducido).
-      - name: dupe_recent_popularity
-        description: Popularidad reciente del perfume de Zara (recent_magnitude; significado deducido).
-      - name: original_recent_popularity
-        description: Popularidad reciente del original (recent_magnitude; significado deducido).
       - name: bayesian_rating_diff
         description: Valoración bayesiana del dupe menos la del original. Negativo = el dupe gusta menos.
       - name: longevity_diff

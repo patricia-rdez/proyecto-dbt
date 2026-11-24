@@ -35,9 +35,6 @@ scores as (
         , have_count
         , had_count
         , want_count
-        , popularity
-        , recent_popularity
-        , compound_popularity
         , winter_share
         , spring_share
         , summer_share
@@ -160,12 +157,6 @@ joined as(
         , so.sillage_avg                                      as original_sillage_avg
         , sd.price_value_avg                                  as dupe_price_value_avg
         , so.price_value_avg                                  as original_price_value_avg
-        , sd.popularity                                       as dupe_popularity
-        , so.popularity                                       as original_popularity
-        , sd.compound_popularity                              as dupe_compound_popularity
-        , so.compound_popularity                              as original_compound_popularity
-        , sd.recent_popularity                                as dupe_recent_popularity
-        , so.recent_popularity                                as original_recent_popularity
 
         -- diferencias (dupe - original): negativo = el dupe sale peor
         , sd.bayesian_rating - so.bayesian_rating             as bayesian_rating_diff
@@ -202,12 +193,6 @@ id_generated as(
         , original_sillage_avg
         , dupe_price_value_avg
         , original_price_value_avg
-        , dupe_popularity
-        , original_popularity
-        , dupe_compound_popularity
-        , original_compound_popularity
-        , dupe_recent_popularity
-        , original_recent_popularity
         , bayesian_rating_diff
         , longevity_diff
         , sillage_diff

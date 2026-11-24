@@ -1,12 +1,12 @@
 sources:
 - name: kaggle
-  description: Dataset proveniente de la página web Kaggle con los datos de la web Fragrantica
+  description: Dataset de Kaggle con 140.228 perfumes obtenidos por scraping de Fragrantica.
   database: "{{ env_var('DBT_BRONZE_DB') }}"
   schema: kaggle
 
   tables:
   - name: perfumes
-    description: Lista de perfumes con sus características y métricas en un momento concreto.
+    description: Un perfume por fila con sus características y atributos observados en un instante concreto.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

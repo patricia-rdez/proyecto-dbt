@@ -4,3 +4,4 @@ models:
     columns:
       - name: people_count
         description: Total de usuarios que votaron. Coincide siempre con rating_vote_count. No pasa a Silver por ser redundante.
+          Un test singular se asegura de esto.

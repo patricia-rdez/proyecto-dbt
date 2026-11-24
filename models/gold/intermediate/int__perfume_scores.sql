@@ -1,7 +1,30 @@
-{{ config(materialized='ephemeral') }}
-
 with latest as (
-    select *
+    select
+          perfume_id
+        , captured_at_utc
+        , rating_avg
+        , rating_vote_count                
+        , longevity_avg            
+        , sillage_avg               
+        , price_value_avg           
+        , have_count
+        , had_count
+        , want_count
+        , perceived_female_votes
+        , perceived_female_leaning_votes
+        , perceived_unisex_votes
+        , perceived_male_leaning_votes
+        , perceived_male_votes
+        , winter_votes
+        , spring_votes
+        , summer_votes
+        , autumn_votes
+        , day_votes
+        , night_votes
+        , popularity
+        , compound_popularity
+        , recent_popularity
+        , last_comment_at_utc
     from {{ ref('slv_kaggle__perfume_metrics') }}
     qualify row_number() over (partition by perfume_id order by captured_at_utc desc) = 1
 ),

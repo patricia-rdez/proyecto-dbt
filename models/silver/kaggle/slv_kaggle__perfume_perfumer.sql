@@ -4,6 +4,7 @@ with perfume_perfumer as(
         perfumers
     from {{ ref('stg_kaggle__perfumes') }}
     where perfumers is not null
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc, date_load desc) = 1
 ),
 
 extended as(
@@ -14,7 +15,7 @@ extended as(
 ),
 
 joined as(
-    select distinct
+    select
           perfume_id
         , {{ dbt_utils.generate_surrogate_key(['perfumer_key']) }} as perfumer_id -- se evita hacer join
     from extended 

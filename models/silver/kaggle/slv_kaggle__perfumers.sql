@@ -12,13 +12,13 @@ extended as(
 ),
 
 cleaned as(
-    select distinct
+    select
           lower(trim(perfumer_name)) as perfumer_key
         , trim(perfumer_name) as perfumer_name
         , count(*) as num_perfumes
     from extended
-    where perfumer_name != '' -- al separar la lista, podrían salir filas vacías
-    group by lower(trim(perfumer_name)), trim(perfumer_name)
+    where trim(perfumer_name) != '' -- al separar la lista, podrían salir filas vacías
+    group by 1,2
 ),
 
 deduplicated as(

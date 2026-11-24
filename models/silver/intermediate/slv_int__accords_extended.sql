@@ -6,6 +6,7 @@ with source as(
         , accords
     from {{ ref('stg_kaggle__perfumes') }}
     where accords is not null
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc, date_load desc) = 1
 ),
 
 extended as(

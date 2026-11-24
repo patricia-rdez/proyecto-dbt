@@ -60,6 +60,8 @@ models:
       +tags: ['gold']
       core:
         +schema: core
+      intermediate:
+        +schema: intermediate
     
 vars:
   min_votes: 50            # mínimo de votos de los perfumes de Zara

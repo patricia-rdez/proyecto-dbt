@@ -65,7 +65,7 @@ casted as(
         , nullif(trim(notes_flat), '')                          as notes_flat
         , nullif(trim(perfumers), '')                           as perfumers
         , nullif(trim(description), '')                         as description
-        , _loaded_at   
+        , _loaded_at
     from source
 ),
 

@@ -177,7 +177,7 @@ models:
                 max_value: 100
 
   - name: slv_kaggle__perfume_metrics
-    description: Distintias métricas capturadas en un instante temporal en la misma source cruda.
+    description: Histórico de las distintas valoraciones del perfume en un instante temporal.
       Algunas de las métricas_avg tienen valor 0, se corrigen a null, pero no se sustituyen por la avg calculada.
       Los votos de la métrica con avg calculada se encuentran en slv_kaggle__perfume_metric_votes
     data_tests:
@@ -243,7 +243,7 @@ models:
         data_tests: [not_null]
     
   - name: slv_kaggle__perfume_metric_votes
-    description: Votos por puntuación de cada métrica (histograma), en formato largo. 
+    description: Histórico de los votos por puntuación de cada métrica (histograma), en formato largo. 
       Una fila por perfume, captura, métrica y puntuación. Se obtiene con UNPIVOT de las columnas
       rating_b1..b5, longevity_b1..b5, sillage_b1..b4 y price_value_b1..b5.
     data_tests:

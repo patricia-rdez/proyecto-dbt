@@ -10,6 +10,7 @@ with source as(
     from {{ ref('stg_kaggle__perfumes') }}
     where notes_top is not null or notes_middle is not null 
         or notes_base is not null or notes_flat is not null
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc, date_load desc) = 1
 ),
 
 extended as(

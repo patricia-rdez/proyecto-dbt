@@ -1,3 +1,12 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='perfume_metrics_id',
+        incremental_strategy='merge',
+        on_schema_change='fail'
+    )
+}}
+
 with metrics as(
     select
           perfume_id
@@ -25,7 +34,13 @@ with metrics as(
         , compound_popularity
         , recent_popularity
         , last_comment_at_utc
+        , date_load
     from {{ ref('stg_kaggle__perfumes') }}
+
+    {% if is_incremental() %}
+    -- solo las cargas de bronze posteriores a la última ya procesada
+    where date_load > (select max(date_load) from {{ this }})
+    {% endif %}
 ),
 
 cleaned as(
@@ -55,7 +70,9 @@ cleaned as(
         , compound_popularity
         , recent_popularity
         , last_comment_at_utc
+        , date_load
     from metrics
+    qualify row_number() over (partition by perfume_id, captured_at_utc order by date_load desc) = 1
 ),
 
 id_generated as(
@@ -86,6 +103,7 @@ id_generated as(
         , compound_popularity
         , recent_popularity
         , last_comment_at_utc
+        , date_load
     from cleaned
 )
 

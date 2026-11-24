@@ -10,6 +10,7 @@ with perfumes as(
         , url
         , description
         , captured_at_utc
+        , date_load
     from {{ ref('stg_kaggle__perfumes') }}
 ),
 
@@ -25,7 +26,7 @@ cleaned as(
         , url
         , description
     from perfumes
-    qualify row_number() over (partition by perfume_id order by captured_at_utc desc) = 1 -- si hago incrementalidad poner date_load
+    qualify row_number() over (partition by perfume_id order by captured_at_utc desc, date_load desc) = 1
 ),
 
 joined as(

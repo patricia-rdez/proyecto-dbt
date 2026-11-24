@@ -32,7 +32,7 @@ models:
         data_tests:
           - dbt_utils.accepted_range:
               arguments:
-                min_value: 1900
+                min_value: 1500
                 max_value: 2027
               config:
                 severity: warn

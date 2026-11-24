@@ -20,7 +20,9 @@ cleaned as(
         , slug
         , perfume_name
         , lower(brand_name) as brand_key
-        , release_year
+        , case 
+            when release_year < 1500 then null else release_year 
+          end as release_year
         , lower(collection_name) as collection_key
         , lower(gender) as gender
         , url

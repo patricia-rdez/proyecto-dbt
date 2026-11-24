@@ -23,8 +23,6 @@ with votes as (
     -- solo las cargas de bronze posteriores a la última ya procesada
     where date_load > (select max(date_load) from {{ this }})
     {% endif %}
-
-    qualify row_number() over (partition by perfume_id order by captured_at_utc desc) = 1
 ),
 
 cleaned as (

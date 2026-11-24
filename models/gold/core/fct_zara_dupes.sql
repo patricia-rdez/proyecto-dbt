@@ -98,10 +98,10 @@ original_accords as (
 dot_products as (
     -- solo se cruzan los acordes que comparten: los demás aportan 0 al producto escalar
     select
-          za.perfume_id                 as dupe_perfume_id
-        , oa.perfume_id                 as original_perfume_id
-        , sum(za.strength * oa.strength) as dot_product
-        , count(*)                       as shared_accords
+          za.perfume_id                     as dupe_perfume_id
+        , oa.perfume_id                     as original_perfume_id
+        , sum(za.strength * oa.strength)    as dot_product
+        , count(*)                          as shared_accords
     from zara_accords za
     inner join original_accords oa
         on oa.accord_id = za.accord_id
@@ -119,6 +119,14 @@ similarity as (
         on norm_dupe.perfume_id = d.dupe_perfume_id
     inner join norms norm_orig 
         on norm_orig.perfume_id = d.original_perfume_id
+),
+
+bands as (
+    select
+          similarity_band_id
+        , min_similarity
+        , max_similarity
+    from {{ ref('dim_similarity_bands') }}
 ),
 
 ranked as (
@@ -139,6 +147,7 @@ joined as(
         , r.original_perfume_id
         , r.similarity_rank
         , round(r.similarity, 4)                              as similarity
+        , b.similarity_band_id
         , r.shared_accords
         , pd.gender = po.gender                               as same_gender
 
@@ -169,6 +178,10 @@ joined as(
     inner join perfumes po on po.perfume_id = r.original_perfume_id
     inner join scores sd on sd.perfume_id = r.dupe_perfume_id
     inner join scores so on so.perfume_id = r.original_perfume_id
+    -- tramo de similitud: [min, max); el tramo superior no tiene máximo
+    left join bands b
+        on  r.similarity >= b.min_similarity
+        and (r.similarity < b.max_similarity or b.max_similarity is null)
 ),
 
 id_generated as(
@@ -178,6 +191,7 @@ id_generated as(
         , original_perfume_id
         , similarity_rank
         , similarity
+        , similarity_band_id
         , shared_accords
         , same_gender
         , dupe_bayesian_rating

@@ -10,3 +10,39 @@ seeds:
           - accepted_values:
               arguments:
                 values: ['designer', 'niche', 'low_cost']
+  - name: similarity_bands
+    description: Tramos de similitud del coseno para clasificar las parejas de dupes.
+      Cada tramo cubre el intervalo [min_similarity, max_similarity); el tramo superior
+      no tiene máximo (max_similarity vacío).
+    config:
+      column_types:
+        similarity_band_id: number(1,0)
+        band_name: varchar
+        min_similarity: number(3,2)
+        max_similarity: number(3,2)
+        sort_order: number(1,0)
+    columns:
+      - name: similarity_band_id
+        description: Id del tramo.
+        data_tests: [unique, not_null]
+      - name: band_name
+        description: Nombre del tramo (Casi idéntico, Muy parecido, Parecido, Algo parecido, Poco parecido).
+        data_tests: [unique, not_null]
+      - name: min_similarity
+        description: Límite inferior del tramo (incluido).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: max_similarity
+        description: Límite superior del tramo (no incluido). Vacío en el tramo superior.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: sort_order
+        description: Orden para los gráficos (1 = casi idéntico).
+        data_tests: [unique, not_null]
